@@ -3,18 +3,20 @@ import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 
+// Custom Components
+import Button from '../components/Button/Button';
+
 // Main Component
 const SuporteScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>Entre em contato pelo WhatsApp pelo número:</Text>
       <Text style={styles.phoneNumber}>(91) 9 9249-5001</Text>
-      <TouchableHighlight style={{borderRadius: 5}} onPress={() => { Linking.openURL('https://wa.me/5591992495001') }}>
-        <View style={styles.button}>
-          <MaterialCommunityIcons name="whatsapp" size={26} color="#fff"/>
-          <Text style={styles.buttonText}>Acessar o WhatsApp</Text>
-        </View>
-      </TouchableHighlight>
+
+      <Button style={styles.button} onPress={() => { Linking.openURL('https://wa.me/5591992495001') }}>
+        <MaterialCommunityIcons name="whatsapp" style={styles.buttonIcon}/>
+        <Text style={styles.buttonText}>Acessar o WhatsApp</Text>
+      </Button>
     </View>
   );
 };
@@ -39,18 +41,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
     backgroundColor: '#25d366',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    color: '#fff',
-    borderRadius: 5,
   },
   buttonText: {
-    color: '#fff',
     fontSize: 16,
+    color: '#fff',
+  },
+  buttonIcon: {
+    fontSize: 26,
+    color: '#fff',
   },
 });
 

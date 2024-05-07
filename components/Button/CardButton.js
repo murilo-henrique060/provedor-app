@@ -26,15 +26,15 @@ const styles = StyleSheet.create({
     height: undefined,
     aspectRatio: 1,
 
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+    rowGap: 10,
+    padding: 10,
+
     borderRadius: 20,
     borderWidth: 3,
     borderColor: '#FFA500',
-
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    rowGap: 10,
-    padding: 10,
   },
   icon: {
     height: 50,
