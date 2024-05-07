@@ -1,12 +1,16 @@
 // React Packages
-import { View, TouchableHighlight, StyleSheet } from 'react-native';
+import { Text, View, TouchableHighlight, StyleSheet } from 'react-native';
+
+// Assets
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Main Component
-export default function Button({ children, onPress, style: customStyle }) {
+export default function Button({ icon, label, onPress, style: containerStyle, iconStyle, labelStyle }) {
   return (
-    <TouchableHighlight style={{ borderRadius: customStyle?.borderRadius ?? styles.button.borderRadius }} onPress={onPress}>
-      <View style={[styles.button, customStyle]}>
-        {children}
+    <TouchableHighlight style={{ borderRadius: containerStyle?.borderRadius ?? styles.button.borderRadius }} onPress={onPress}>
+      <View style={[styles.button, containerStyle]}>
+        {icon && <MaterialCommunityIcons name={icon} style={[styles.icon, iconStyle]} />}
+        {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
       </View>
     </TouchableHighlight>
   );
@@ -27,5 +31,13 @@ const styles = StyleSheet.create({
 
     color: '#fff',
     backgroundColor: '#3f58df',
+  },
+  icon: {
+    fontSize: 24,
+    color: '#fff',
+  },
+  label: {
+    fontSize: 16,
+    color: '#fff',
   },
 });

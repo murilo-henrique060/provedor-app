@@ -7,16 +7,13 @@ import * as Linking from 'expo-linking';
 import Button from '../components/Button/Button';
 
 // Main Component
-const SuporteScreen = () => {
+export default function SuporteScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>Entre em contato pelo WhatsApp pelo número:</Text>
       <Text style={styles.phoneNumber}>(91) 9 9249-5001</Text>
 
-      <Button style={styles.button} onPress={() => { Linking.openURL('https://wa.me/5591992495001') }}>
-        <MaterialCommunityIcons name="whatsapp" style={styles.buttonIcon}/>
-        <Text style={styles.buttonText}>Acessar o WhatsApp</Text>
-      </Button>
+      <Button icon="whatsapp" label="Acessar o Whatsapp" style={styles.button} onPress={() => { Linking.openURL('https://wa.me/5591992495001') }}/>
     </View>
   );
 };
@@ -43,14 +40,4 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#25d366',
   },
-  buttonText: {
-    fontSize: 16,
-    color: '#fff',
-  },
-  buttonIcon: {
-    fontSize: 26,
-    color: '#fff',
-  },
 });
-
-export default SuporteScreen;

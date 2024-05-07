@@ -51,10 +51,7 @@ export default function WhatIsMyIpScreen() {
         <ActivityIndicator size="large" color="#007AFF" />
       }
 
-      <Button onPress={() => {if (ready) {getIPAddress()}}}>
-        <MaterialCommunityIcons name="refresh" size={24} color="#fff"/>
-        <Text style={styles.buttonText}>Recarregar</Text>
-      </Button>
+      <Button icon="refresh" label="Recarregar" onPress={() => {if (ready) {getIPAddress()}}}/>
 
       {
         ready ?
@@ -62,10 +59,7 @@ export default function WhatIsMyIpScreen() {
         <ActivityIndicator size="large" color="#007AFF" />
       }
 
-      <Button style={styles.mapButton} onPress={() => { if (ready) { Linking.openURL(mapUrl) }}}>
-        <MaterialCommunityIcons name="map" size={24} color="#fff"/>
-        <Text style={styles.buttonText}>Ver no mapa</Text>
-      </Button>
+      <Button icon="map" label="Ver no mapa" style={styles.mapButton} onPress={() => { if (ready) { Linking.openURL(mapUrl) }}}/>
     </View>
   );
 };
@@ -84,10 +78,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  buttonText: {
-    fontSize: 16,
-    color: '#fff',
   },
   mapButton: {
     backgroundColor: '#28a657',
