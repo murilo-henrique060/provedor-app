@@ -1,14 +1,21 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+// React Packages
+import { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import * as Linking from 'expo-linking';
 
-const WhatIsMyIpScreen = () => {
-  const [ready, setReady] = React.useState(false);
+// Assets
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-  const [ipAddress, setIPAddress] = React.useState('');
-  const [location, setLocation] = React.useState('');
-  const [mapUrl, setMapUrl] = React.useState('');
+// Custom Components
+import Button from '../../components/Button/Button';
+
+// Main Component
+export default function WhatIsMyIpScreen() {
+  const [ready, setReady] = useState(false);
+
+  const [ipAddress, setIPAddress] = useState('');
+  const [location, setLocation] = useState('');
+  const [mapUrl, setMapUrl] = useState('');
 
   const getIPAddress = async () => {
     try {
@@ -31,8 +38,8 @@ const WhatIsMyIpScreen = () => {
     setReady(true);
   };
 
-  React.useEffect(() => {
-    getIPAddress();
+  useEffect(() => {
+    getIPAddress()
   }, []);
 
   return (
@@ -43,52 +50,47 @@ const WhatIsMyIpScreen = () => {
         <Text style={styles.ipAddress}>{ipAddress}</Text> :
         <ActivityIndicator size="large" color="#007AFF" />
       }
-      <TouchableOpacity style={styles.button} onPress={() => {if (ready) {getIPAddress()}}}>
-        <Feather name="refresh-ccw" size={24} color="#fff" />
+
+      <Button onPress={() => {if (ready) {getIPAddress()}}}>
+        <MaterialCommunityIcons name="refresh" size={24} color="#fff"/>
         <Text style={styles.buttonText}>Recarregar</Text>
-      </TouchableOpacity>
+      </Button>
+
       {
         ready ?
         <Text style={styles.location}>{location}</Text> :
         <ActivityIndicator size="large" color="#007AFF" />
       }
-      <TouchableOpacity style={styles.mapsButton} onPress={() => { if (ready) { Linking.openURL(mapUrl) }}}>
-        {
-          ready ?
-          <Text style={styles.mapsButtonText}>Ver no mapa</Text> :
-          <ActivityIndicator color="#fff" />
-        }
-      </TouchableOpacity>
+
+      <Button style={styles.mapButton} onPress={() => { if (ready) { Linking.openURL(mapUrl) }}}>
+        <MaterialCommunityIcons name="map" size={24} color="#fff"/>
+        <Text style={styles.buttonText}>Ver no mapa</Text>
+      </Button>
     </View>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+
+    gap: 20,
+
     backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 10,
-    borderRadius: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-    marginBottom: 20,
   },
   buttonText: {
-    color: '#fff',
     fontSize: 16,
-    marginLeft: 10,
+    color: '#fff',
+  },
+  mapButton: {
+    backgroundColor: '#28a657',
   },
   ipAddress: {
     fontSize: 18,
@@ -97,24 +99,4 @@ const styles = StyleSheet.create({
   location: {
     fontSize: 16,
   },
-  mapsButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  mapsButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  mapImage: {
-    width: 400,
-    height: 200,
-    marginTop: 20,
-  },
 });
-
-export default WhatIsMyIpScreen;
