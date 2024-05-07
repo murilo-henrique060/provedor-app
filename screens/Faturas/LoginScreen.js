@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
 
     paddingHorizontal: 40,
     paddingVertical: 20,
+
+    backgroundColor: '#fff',
   },
   title: {
     paddingBottom: 20,
