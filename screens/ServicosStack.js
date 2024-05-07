@@ -1,22 +1,23 @@
-import React from 'react';
-import { View } from 'react-native';
+// React Packages
 import { createStackNavigator } from '@react-navigation/stack';
 
+// Screens
 import ServicosScreen from './Servicos/ServicosScreen';
 import SpeedTestScreen from './Servicos/SpeedTestScreen';
 import WhatIsMyIpScreen from './Servicos/WhatIsMyIpScreen';
 
 const Stack = createStackNavigator();
 
-const ServicosStack = (props) => {
+// Main Component
+export default function ServicosStack() {
   return (
     <Stack.Navigator
       screenOptions={{
         headerTitleAlign: 'center',
         headerTintColor: '#fff',
-        headerBackground: () => (
-          <View style={{ backgroundColor: '#3f58df', height: "100%" }} />
-        ),
+        headerStyle: {
+          backgroundColor: '#3f58df',
+        },
       }}
     >
       <Stack.Screen name="Serviços" component={ServicosScreen} />
@@ -25,6 +26,3 @@ const ServicosStack = (props) => {
     </Stack.Navigator>
   );
 };
-
-
-export default ServicosStack;

@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     color: '#FFA500',
   },
   label: {
+    textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ffa500',
