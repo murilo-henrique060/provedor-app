@@ -1,4 +1,5 @@
 // React Packages
+import { useState } from 'react';
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 
 // Custom Components
@@ -6,17 +7,27 @@ import Button from '../../components/Button/Button';
 
 // Main Component
 export default function LoginScreen() {
+  const [cpf, setCPF] = useState(null);
+  const [password, setPassword] = useState(null);
+
+  const handleLogin = () => {
+    console.log('CPF:', cpf);
+    console.log('Password:', password);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
 
-      <Text style={styles.label}>Email</Text>
-      <TextInput style={styles.input}/>
+      <View style={styles.formField}>
+        <Text style={styles.label}>CPF</Text>
+        <TextInput inputMode="numeric" textContentType="username" maxLength={11} style={styles.input} onChangeText={text => setCPF(text)}/>
 
-      <Text style={styles.label}>Senha</Text>
-      <TextInput style={styles.input}/>
+        <Text style={styles.label}>Senha</Text>
+        <TextInput textContentType="password" secureTextEntry={true} style={styles.input} onChangeText={text => setPassword(text)}/>
+      </View>
 
-      <Button label="Entrar"/>
+      <Button label="Entrar" onPress={handleLogin}/>
     </View>
   );
 }
@@ -37,6 +48,10 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
   },
+  formField: {
+    width: '100%',
+    marginBottom: 10,
+  },
   label: {
     width: '100%',
     
@@ -51,5 +66,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#ccc',
-  }
+  },
 });
