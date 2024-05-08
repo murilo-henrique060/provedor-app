@@ -1,7 +1,9 @@
 // React Packages
-import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from 'react-native';
 import * as Linking from 'expo-linking';
+
+// Custom Packages
+import formatPhone from '../utils/phoneFormatter';
 
 // Custom Components
 import Button from '../components/Button/Button';
@@ -11,9 +13,9 @@ export default function SuporteScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>Entre em contato pelo WhatsApp pelo número:</Text>
-      <Text style={styles.phoneNumber}>(91) 9 9249-5001</Text>
+      <Text style={styles.phoneNumber}>{ formatPhone(process.env.EXPO_PUBLIC_SUPPORT_PHONE_NUMBER) }</Text>
 
-      <Button icon="whatsapp" label="Acessar o Whatsapp" style={styles.button} onPress={() => { Linking.openURL('https://wa.me/5591992495001') }}/>
+      <Button icon="whatsapp" label="Acessar o Whatsapp" style={styles.button} onPress={() => { Linking.openURL(`https://wa.me/${process.env.EXPO_PUBLIC_SUPPORT_PHONE_NUMBER}`) }}/>
     </View>
   );
 };
