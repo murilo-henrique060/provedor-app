@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 // Screens
 import LoginScreen from './Faturas/LoginScreen';
+import FaturasScreen from './Faturas/FaturasScreen';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,7 @@ export default function FaturasStack() {
       }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Faturas" component={FaturasScreen} options={{ headerLeft: () => null, gestureEnabled: false }} />
     </Stack.Navigator>
   );
 };

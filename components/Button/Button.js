@@ -1,15 +1,15 @@
 // React Packages
-import { Text, View, TouchableHighlight, StyleSheet } from 'react-native';
+import { Text, View, TouchableHighlight, ActivityIndicator, StyleSheet } from 'react-native';
 
 // Assets
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Main Component
-export default function Button({ icon, label, onPress, style: containerStyle, iconStyle, labelStyle }) {
+export default function Button({ icon, label, loading, onPress, style: containerStyle, iconStyle, labelStyle, loadingSize }) {
   return (
     <TouchableHighlight style={{ borderRadius: containerStyle?.borderRadius ?? styles.button.borderRadius }} onPress={onPress}>
       <View style={[styles.button, containerStyle]}>
-        {icon && <MaterialCommunityIcons name={icon} style={[styles.icon, iconStyle]} />}
+        {loading ? <ActivityIndicator color={iconStyle?.color ?? styles.icon.color} size={loadingSize ?? "small"}/> : icon && <MaterialCommunityIcons name={icon} style={[styles.icon, iconStyle]} />}
         {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
       </View>
     </TouchableHighlight>

@@ -2,22 +2,44 @@
 import { useState } from 'react';
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 
+// Custom Packages
+import User from '../../services/users';
+
 // Custom Components
 import Button from '../../components/Button/Button';
 
 // Main Component
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [cpf, setCPF] = useState(null);
   const [password, setPassword] = useState(null);
 
-  const handleLogin = () => {
-    console.log('CPF:', cpf);
-    console.log('Password:', password);
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState(null);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    const logged = await User.login(cpf, password);
+
+    if (logged) {
+      setError(false);
+      navigation.navigate('Faturas');
+    } else{
+      setError(true);
+    }
+    setLoading(false);
   };
+
+  const isLogged = User.isLogged();
+  if (isLogged) {
+    navigation.navigate('Faturas');
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
+
+      {error && <Text style={styles.errorLabel}>CPF e/ou senha incorreto(s)</Text>}
 
       <View style={styles.formField}>
         <Text style={styles.label}>CPF</Text>
@@ -27,7 +49,7 @@ export default function LoginScreen() {
         <TextInput textContentType="password" secureTextEntry={true} style={styles.input} onChangeText={text => setPassword(text)}/>
       </View>
 
-      <Button label="Entrar" onPress={handleLogin}/>
+      <Button label={loading ? "Entrando..." : "Entrar"} loading={loading} onPress={handleLogin}/>
     </View>
   );
 }
@@ -49,6 +71,15 @@ const styles = StyleSheet.create({
 
     fontSize: 32,
     fontWeight: 'bold',
+  },
+  errorLabel: {
+    width: '100%',
+    marginBottom: 10,
+
+    textAlign: 'center',
+    fontSize: 16,
+
+    color: 'red',
   },
   formField: {
     width: '100%',
