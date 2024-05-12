@@ -1,15 +1,20 @@
 // React Packages
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 
 // Custom Packages
-import User from '../../services/users';
+import User from '../../services/user';
+
+// Contexts
+import CurrentUserContext from '../../contexts/CurrentUserContext';
 
 // Custom Components
 import Button from '../../components/Button/Button';
 
 // Main Component
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
+  const { setUser } = useContext(CurrentUserContext);
+
   const [cpf, setCPF] = useState(null);
   const [password, setPassword] = useState(null);
 
@@ -19,21 +24,16 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     setLoading(true);
-    const logged = await User.login(cpf, password);
+    const userId = await User.login(cpf, password);
 
-    if (logged) {
+    if (userId) {
       setError(false);
-      navigation.navigate('Faturas');
+      setUser(userId);
     } else{
       setError(true);
     }
     setLoading(false);
   };
-
-  const isLogged = User.isLogged();
-  if (isLogged) {
-    navigation.navigate('Faturas');
-  }
 
   return (
     <View style={styles.container}>
