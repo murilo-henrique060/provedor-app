@@ -23,7 +23,6 @@ class User {
 
     if (!assasUser) return false;
     
-    console.log('user:', assasUser);
     await SecureStore.setItemAsync('user', JSON.stringify(assasUser));
     return assasUser;
   }

@@ -9,9 +9,9 @@ import User from '../services/user';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 
 // Screens
-import LoginScreen from './Faturas/LoginScreen';
-import UserAreaScreen from './Faturas/UserAreaScreen';
-import MyAccountScreen from './Faturas/MyAccountScreen';
+import LoginScreen from './UserArea/LoginScreen';
+import UserAreaScreen from './UserArea/UserAreaScreen';
+import MyAccountScreen from './UserArea/MyAccountScreen';
 
 const Stack = createStackNavigator();
 
