@@ -10,7 +10,7 @@ import TabIcon from './components/Navigation/TabIcon';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ServicosStack from './screens/ServicosStack';
-import FaturasStack from './screens/FaturasStack';
+import UserAreaStack from './screens/UserAreaStack';
 import SuporteScreen from './screens/SuporteScreen';
 
 const Tab = createBottomTabNavigator();
@@ -40,7 +40,7 @@ export default function App() {
       >
         <Tab.Screen name="Início" component={HomeScreen} options={{ tabBarLabel: 'Início', tabBarIcon: (props) => <TabIcon name="home" {...props} /> }}/>
         <Tab.Screen name="Serviços Stack" component={ServicosStack} options={{ tabBarLabel: 'Serviços', tabBarIcon: (props) => <TabIcon name="toolbox" {...props}/>, headerShown: false }}/>
-        <Tab.Screen name="Faturas Stack" component={FaturasStack} options={{ tabBarLabel: 'Faturas', tabBarIcon: (props) => <TabIcon name="file-document" {...props}/>, headerShown: false  }}/>
+        <Tab.Screen name="Área do Usuário Stack" component={UserAreaStack} options={{ tabBarLabel: 'Área do Usuário', tabBarIcon: (props) => <TabIcon name="account" {...props}/>, headerShown: false  }}/>
         <Tab.Screen name="Suporte" component={SuporteScreen} options={{ tabBarLabel: 'Suporte', tabBarIcon: (props) => <TabIcon name="message-text" {...props}/> }}/>
       </Tab.Navigator>
       <StatusBar style="light" backgroundColor="#3f58df"/>

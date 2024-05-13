@@ -10,12 +10,13 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 
 // Screens
 import LoginScreen from './Faturas/LoginScreen';
-import FaturasScreen from './Faturas/FaturasScreen';
+import UserAreaScreen from './Faturas/UserAreaScreen';
+import MyAccountScreen from './Faturas/MyAccountScreen';
 
 const Stack = createStackNavigator();
 
 // Main Component
-export default function FaturasStack() {
+export default function UserAreaStack() {
   const [user, setUser] = useState(User.isLogged());
 
   return (
@@ -31,8 +32,12 @@ export default function FaturasStack() {
       >
         {
           user ?
-          <Stack.Screen name="Faturas" component={FaturasScreen} options={{ headerLeft: () => null, gestureEnabled: false }} /> :
-          <Stack.Screen name="Login" component={LoginScreen} />
+          [
+            <Stack.Screen name="Área do Usuário" component={UserAreaScreen} key={0}/>,
+            <Stack.Screen name="Minha Conta" component={MyAccountScreen} key={1}/>
+          ]
+          :
+          <Stack.Screen name="Login" component={LoginScreen}/>
         }
       </Stack.Navigator>
     </CurrentUserContext.Provider>

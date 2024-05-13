@@ -10,7 +10,7 @@ export default function HomeScreen(props) {
     <ScrollView style={styles.scrollview}>
       <View style={styles.container}>
         <CardButton icon="toolbox-outline" label="Serviços" goTo="Serviços Stack" {...props}/>
-        <CardButton icon="file-document-outline" label="Faturas" goTo="Faturas" {...props}/>
+        <CardButton icon="account-outline" label="Área do Usuário" goTo="Área do Usuário Stack" {...props}/>
         <CardButton icon="message-text-outline" label="Suporte" goTo="Suporte" {...props}/>
       </View>
     </ScrollView>
