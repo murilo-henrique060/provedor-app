@@ -1,5 +1,5 @@
 // React Packages
-import { createContext, useState } from 'react';
+import { useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Custom Packages
@@ -12,6 +12,7 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 import LoginScreen from './UserArea/LoginScreen';
 import UserAreaScreen from './UserArea/UserAreaScreen';
 import MyAccountScreen from './UserArea/MyAccountScreen';
+import FaturasStack from './UserArea/FarturasStack';
 
 const Stack = createStackNavigator();
 
@@ -34,7 +35,8 @@ export default function UserAreaStack() {
           user ?
           [
             <Stack.Screen name="Área do Usuário" component={UserAreaScreen} key={0}/>,
-            <Stack.Screen name="Minha Conta" component={MyAccountScreen} key={1}/>
+            <Stack.Screen name="Minha Conta" component={MyAccountScreen} key={1}/>,
+            <Stack.Screen name="Faturas" component={FaturasStack} key={2}/>
           ]
           :
           <Stack.Screen name="Login" component={LoginScreen}/>
