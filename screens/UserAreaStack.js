@@ -12,7 +12,7 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 import LoginScreen from './UserArea/LoginScreen';
 import UserAreaScreen from './UserArea/UserAreaScreen';
 import MyAccountScreen from './UserArea/MyAccountScreen';
-import FaturasStack from './UserArea/FarturasStack';
+import FaturasStack from './UserArea/FaturasStack';
 
 const Stack = createStackNavigator();
 

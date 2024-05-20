@@ -20,7 +20,7 @@ export default function UserAreaScreen(props) {
       <View style={styles.container}>
         <CardButton icon="account-outline" label="Minha Conta" goTo="Minha Conta" {...props}/>
         <CardButton icon="file-document-outline" label="Faturas" goTo="Faturas" {...props}/>
-        <CardButton icon="file-outline" label="Notas Fiscais" goTo="Suporte" {...props}/>
+        {/* <CardButton icon="file-outline" label="Notas Fiscais" goTo="Suporte" {...props}/> */}
       </View>
     </ScrollView>
   );

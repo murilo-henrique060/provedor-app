@@ -17,7 +17,7 @@ function FaturasScreen({ route: {params: { state }}}) {
   const [bills, setBills] = useState([]);
 
   useEffect(() => {
-    AssasController.getBills(user).then(bills => {
+    AssasController.getBills(user, state).then(bills => {
       setBills(bills);
     });
   }, []);
@@ -37,7 +37,7 @@ function FaturasScreen({ route: {params: { state }}}) {
         <FlashList
           data={bills}
           renderItem={({ item }) => <Bill bill={item} />}
-          estimatedItemSize={82}
+          estimatedItemSize={92}
           contentContainerStyle={styles.list}
         />
       }
@@ -49,8 +49,8 @@ function FaturasScreen({ route: {params: { state }}}) {
 export default function FaturasStack() {
   return (
     <TopTab.Navigator>
-      <TopTab.Screen name="Faturas Abertas" component={FaturasScreen} initialParams={{ state: 'abertas' }}/>
-      <TopTab.Screen name="Faturas Vencidas" component={FaturasScreen} initialParams={{ state: 'vencidas' }}/>
+      <TopTab.Screen name="Faturas Abertas" component={FaturasScreen} initialParams={{ state: 'PENDING' }}/>
+      <TopTab.Screen name="Faturas Vencidas" component={FaturasScreen} initialParams={{ state: 'OVERDUE' }}/>
     </TopTab.Navigator>
   )
 }

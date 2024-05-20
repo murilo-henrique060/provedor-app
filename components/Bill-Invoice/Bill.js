@@ -6,6 +6,9 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 // Custom Packages
 import { formatDateText, formatDate, formatMoney } from '../../utils/billFormatter';
 
+// Controllers
+import AssasController from "../../controllers/AssasController";
+
 // Custom Components
 import Button from '../Button/Button';
 
@@ -21,7 +24,6 @@ export default function Bill({ bill }) {
   const date = formatDateText(bill.originalDueDate);
   const value = formatMoney(bill.value);
   const dueDate = formatDate(bill.dueDate);
-  const bankSlipUrl = bill.bankSlipUrl;
 
   const billHeightAnimation = useAnimatedStyle(() => {
     return {
@@ -39,6 +41,10 @@ export default function Bill({ bill }) {
     bodyHeight.value = withTiming(open ? 0 : 104, { duration: 400 });
     iconRotation.value = withTiming(open ? 0 : 180, { duration: 400 });
     setOpen(!open);
+  }
+
+  const downloadBankSlip = () => {
+    AssasController.downloadBill(bill);
   }
 
   return (
@@ -59,8 +65,7 @@ export default function Bill({ bill }) {
         </View>
 
         <View style={styles.buttonRow}>
-          <Button label="Visualizar Boleto" labelStyle={styles.textBody}/>
-          <Button label="Baixar Boleto" labelStyle={styles.textBody}/>
+          <Button label="Baixar Boleto" labelStyle={styles.textBody} onPress={downloadBankSlip}/>
         </View>
       </Animated.View>
     </View>
@@ -73,6 +78,7 @@ const styles = StyleSheet.create({
 
     width: '100%',
     padding: 20,
+    marginBottom: 10,
 
     borderRadius: 10,
 
