@@ -1,14 +1,18 @@
-import { useContext } from 'react';
-import { StyleSheet } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useContext } from "react";
+import { View, StyleSheet } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import ColorScheme from '@themes/ColorScheme';
-import ThemeContext from '@contexts/ThemeContext';
+import ColorScheme from "@themes/ColorScheme";
+import ThemeContext from "@contexts/ThemeContext";
 
 const BottomTab = createBottomTabNavigator();
 
 function HomeScreen() {
-  return null;
+  return (
+    <View>
+      {/* Home screen content */}
+    </View>
+  );
 }
 
 export default function AppStack() {

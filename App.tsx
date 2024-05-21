@@ -1,8 +1,8 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
 
-import AppStack from '@screens/AppStack';
+import AppStack from "@screens/AppStack";
 
-import { ThemeContextProvider } from '@contexts/ThemeContext';
+import { ThemeContextProvider } from "@contexts/ThemeContext";
 
 export default function App() {
   return (
