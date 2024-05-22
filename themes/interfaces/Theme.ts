@@ -1,4 +1,4 @@
-import ColorScheme from "@themes/ColorScheme";
+import ColorScheme from "./ColorScheme";
 
 /**
  * Theme

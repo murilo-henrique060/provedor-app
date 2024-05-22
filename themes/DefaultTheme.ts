@@ -1,12 +1,12 @@
-import Theme from "@themes/Theme";
+import Theme from "./interfaces/Theme";
 
 const DefaultTheme: Theme = {
   light: {
-    primary: "#6200EE",
-    secondary: "#03DAC6",
-    body: "#000000",
+    primary: "#3f58df",
+    secondary: "#FFA500",
+    body: "#ffffff",
     whatsapp: "#25D366",
-    textPrimary: "#000000",
+    textPrimary: "#ffffff",
     textBody: "#000000",
   },
   dark: {

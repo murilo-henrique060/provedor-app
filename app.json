@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "experiments": {
-      "tsconfigPaths": false
+      "tsconfigPaths": true
     },
     "splash": {
       "image": "./assets/splash.png",

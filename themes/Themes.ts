@@ -1,8 +1,8 @@
-import Theme from "@themes/Theme";
-
 import DefaultTheme from "@themes/DefaultTheme";
 
-const themes: { [key: string]: Theme } = {
+import Themes from "./interfaces/Themes";
+
+const themes: Themes = {
   default: DefaultTheme,
 };
 

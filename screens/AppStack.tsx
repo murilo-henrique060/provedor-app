@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import ColorScheme from "@themes/ColorScheme";
 import ThemeContext from "@contexts/ThemeContext";
 
 const BottomTab = createBottomTabNavigator();
@@ -16,7 +15,7 @@ function HomeScreen() {
 }
 
 export default function AppStack() {
-  const { theme } = useContext(ThemeContext) as { theme: ColorScheme };
+  const { theme } = useContext(ThemeContext);
 
   const colors = StyleSheet.create({
     container: {

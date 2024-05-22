@@ -1,11 +1,18 @@
 import { ReactNode, createContext, useState } from "react";
 import { useColorScheme } from "react-native";
 
-import Themes from "Themes";
+import ColorScheme from "@themes/interfaces/ColorScheme";
+import Themes from "@themes/Themes";
 
 const defaultColorScheme = process.env.EXPO_PUBLIC_COLOR_SCHEME ?? "default";
 
-const ThemeContext = createContext(null as unknown);
+const ThemeContext = createContext({
+  systemTheme: "",
+  setSystemTheme: (theme: "light" | "dark") => {},
+  colorScheme: "",
+  setColorScheme: (colorScheme: string) => {},
+  theme: {} as ColorScheme,
+});
 
 export default ThemeContext;
 
