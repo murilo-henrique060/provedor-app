@@ -4,10 +4,13 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import ThemeContext from "@contexts/ThemeContext";
 
-function Badge({ stateIndex, index, screen, navigation }) {
+export default function BottomTabBar({ state, descriptors, navigation }) {
   const { theme } = useContext(ThemeContext);
 
   const colors = StyleSheet.create({
+    tabBar: {
+      backgroundColor: theme.primary,
+    },
     badgeIcon: {
       color: theme.textPrimary,
     },
@@ -16,47 +19,50 @@ function Badge({ stateIndex, index, screen, navigation }) {
     },
   });
 
-  const title = screen.params.title ?? screen.name;
-  const isFocused = stateIndex === index;
-
-  const onPress = () => {
-    const event = navigation.emit({
-      type: 'tabPress',
-      target: screen.key,
-      canPreventDefault: true,
-    });
-
-    if (!isFocused && !event.defaultPrevented) {
-      navigation.navigate(screen.name, screen.params);
-    }
-  };  
-
-  return (
-    <TouchableOpacity style={[styles.badge]} key={index} onPress={onPress}>
-      <MaterialCommunityIcons name={isFocused ? screen.params.icon :  screen.params.icon + "-outline" } style={[styles.badgeIcon, colors.badgeIcon]} />
-      <Text style={[styles.badgeText, colors.badgeText]}>{title}</Text>
-    </TouchableOpacity>
-  )
-}
-
-export default function BottomTabBar({state,navigation}) {
-  const { theme } = useContext(ThemeContext);
-
-  const colors = StyleSheet.create({
-    tabBar: {
-      backgroundColor: theme.primary,
-    },
-  });
-
-  const screens = state.routes;
-  
   return (
     <View style={[styles.tabBar, colors.tabBar]}>
       {
-        screens.map((screen, index) => <Badge key={index} screen={screen} stateIndex={state.index} index={index} navigation={navigation} />)
+        state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+      
+          const title = route.params.title ?? options.tabBarLabel ?? options.title ?? route.name;    
+          const isFocused = state.index === index;
+          
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+  
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.jumpTo(route.name, route.params);
+            }
+          };
+
+          const onLongPress = () => {
+            navigation.emit({
+              type: 'tabLongPress',
+              target: route.key,
+            });
+          };
+
+          const opacityStyle = {
+            opacity: isFocused ? 1 : 0.8,
+          };
+
+          if (route.params.hidden) return null;
+
+          return (
+            <TouchableOpacity style={[styles.badge, opacityStyle]} key={index} onPress={onPress} onLongPress={onLongPress}>
+              <MaterialCommunityIcons name={isFocused ? route.params.icon :  route.params.icon + "-outline" } style={[styles.badgeIcon, colors.badgeIcon]} />
+              <Text style={[styles.badgeText, colors.badgeText]}>{title}</Text>
+            </TouchableOpacity>
+          );
+        })
       }
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

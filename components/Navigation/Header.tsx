@@ -1,10 +1,34 @@
 import { useContext } from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { Header as CustomHeader, getHeaderTitle } from "@react-navigation/elements";
+import { useNavigation } from '@react-navigation/native';
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import ThemeContext from "@contexts/ThemeContext";
+
+function headerLeft(paramCanGoBack=true) {
+  const { theme } = useContext(ThemeContext);
+  const navigation = useNavigation();
+
+  const colors = StyleSheet.create({
+    icon: {
+      color: theme.textPrimary,
+    }
+  });
+
+  const onPress = () => {
+    navigation.goBack();
+  }
+
+  const canGoBack =  navigation.canGoBack() && paramCanGoBack;
+
+  return (
+    <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+      {canGoBack && <MaterialCommunityIcons name="arrow-left" style={[styles.icon, colors.icon]} />}
+    </TouchableOpacity>
+  );
+}
 
 function headerRight() {
   const { systemTheme, setSystemTheme, theme } = useContext(ThemeContext);
@@ -31,7 +55,7 @@ function headerRight() {
   );
 }
 
-export default function Header({ options, route }) {
+export default function Header({ route }) {
   const { theme } = useContext(ThemeContext);
 
   const colors = StyleSheet.create({
@@ -43,12 +67,14 @@ export default function Header({ options, route }) {
     }
   });
 
-  const title = getHeaderTitle(options, route.name);
+  const title = route.params.title ?? route.name;
 
   return (
     <CustomHeader
       title={title}
+      headerLeft={() => headerLeft(route.params.canGoBack)}
       headerRight={headerRight}
+      headerTitleAlign="center"
       headerStyle={colors.header}
       headerTitleStyle={colors.headerTitle}
     />

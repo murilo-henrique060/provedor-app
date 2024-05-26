@@ -1,24 +1,16 @@
-import { useContext } from "react";
-import { View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Header from "@components/Navigation/Header";
 import BottomTabBar from "@components/Navigation/BottomTabBar";
 
-const BottomTab = createBottomTabNavigator();
+import HomeScreen from "@screens/AppScreens/HomeScreen";
 
-function HomeScreen() {
-  return (
-    <View>
-      {/* Home screen content */}
-    </View>
-  );
-}
+const BottomTab = createBottomTabNavigator();
 
 export default function AppStack() {
   return (
     <BottomTab.Navigator
-      tabBar={props => <BottomTabBar {...props} />}
+      tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{
         header: Header,
       }}
@@ -29,6 +21,7 @@ export default function AppStack() {
         initialParams={{
           title: "Ínicio",
           icon: "home",
+          canGoBack: false,
         }}
       />
       <BottomTab.Screen
@@ -37,6 +30,7 @@ export default function AppStack() {
         initialParams={{
           title: "Serviços",
           icon: "toolbox",
+          canGoBack: false,
         }}
       />
       <BottomTab.Screen
@@ -45,6 +39,7 @@ export default function AppStack() {
         initialParams={{
           title: "Área do Usuário",
           icon: "account",
+          canGoBack: false,
         }}
       />
       <BottomTab.Screen
@@ -53,6 +48,15 @@ export default function AppStack() {
         initialParams={{
           title: "Suporte",
           icon: "message-text",
+          canGoBack: false,
+        }}
+      />
+      <BottomTab.Screen
+        name="Settings"
+        component={HomeScreen}
+        initialParams={{
+          title: "Configurações",
+          hidden: true,
         }}
       />
     </BottomTab.Navigator>

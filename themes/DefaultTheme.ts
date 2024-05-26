@@ -11,7 +11,7 @@ const DefaultTheme: Theme = {
   },
   dark: {
     primary: "#6200EE",
-    secondary: "#03DAC6",
+    secondary: "#FFA500",
     body: "#121212",
     whatsapp: "#25D366",
     textPrimary: "#FFFFFF",
