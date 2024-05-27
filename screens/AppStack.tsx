@@ -4,6 +4,7 @@ import Header from "@components/Navigation/Header";
 import BottomTabBar from "@components/Navigation/BottomTabBar";
 
 import HomeScreen from "@screens/AppScreens/HomeScreen";
+import ServicesStack from "@screens/AppScreens/ServicesStack";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -26,7 +27,10 @@ export default function AppStack() {
       />
       <BottomTab.Screen
         name="Services Stack"
-        component={HomeScreen}
+        component={ServicesStack}
+        options={{
+          headerShown: false,
+        }}
         initialParams={{
           title: "Serviços",
           icon: "toolbox",

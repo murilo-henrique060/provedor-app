@@ -1,7 +1,10 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "expo/tsconfig.base.json",
   "compilerOptions": {
     "paths": {
+      "@assets/*": [
+        "./assets/*"
+      ],
       "@components/*": [
         "./components/*"
       ],
@@ -13,7 +16,10 @@
       ],
       "@screens/*": [
         "./screens/*"
-      ]
+      ],
+      "@utils/*": [
+        "./utils/*"
+      ],
     },
   },
   "include": [
