@@ -1,5 +1,3 @@
-const { FastAPI, SpeedUnits } = require('fast-api-speedtest');
-
 export default class InternetSpeedTest {
   downloadSpeeds: number[] = [];
 
@@ -15,29 +13,31 @@ export default class InternetSpeedTest {
   }
 
   async testDownloadSpeed(): Promise<Array<Number>> {
-    // const downloadSize = 10 * 1024 * 1024; // 10MB
+    const downloadSize = 25 * 1024 * 1024; // 25MB
     // const downloadUrl = "https://examplefile.com/file-download/24";
+    const downloadUrl = "https://teste.ibltelecom.com:8080/download?nocache=b50bdb2a-c960-4f44-93a7-844465cbd04d&size=25000000&guid=80ab1a33-42c9-45c1-89fb-705b6d1baf38";
     
-    // const downloadStart = new Date().getTime();
-    // const downloadResponse = await fetch(downloadUrl, {
-      //   cache: "no-store",
-    // });
-    // const downloadEnd = new Date().getTime();
-    
-    // const downloadTime = (downloadEnd - downloadStart) / 1000;
-    // console.warn(downloadResponse.status, downloadTime);
-    // const downloadSpeedMbps = Number(((downloadSize / downloadTime) / 1024 / 1024).toFixed(2));
-    
-    const FastTest = new FastAPI({
-      measureDownload: true,
-      downloadUnit: SpeedUnits.Mbps,
-      timeout: 60000
-    });
+    try {  
+      const downloadStart = new Date().getTime();
+      const downloadResponse = await fetch(downloadUrl, {
+        mode: "cors",
+        keepalive: true,
+        priority: "high",
+        referrerPolicy: "no-referrer",
+        cache: "no-store",
+      });
+      const downloadEnd = new Date().getTime();
+      
+      const downloadTime = (downloadEnd - downloadStart) / 1000;
+      console.warn(downloadResponse.status, downloadTime);
+      const downloadSpeedMbps = Number(((downloadSize / downloadTime) / 1024 / 1024).toFixed(2));
 
-    const { downloadSpeed } = await FastTest.runTest();
+      this.downloadSpeeds.push(downloadSpeedMbps);
 
-    this.downloadSpeeds.push(downloadSpeed);
-
-    return [downloadSpeed, this.getAverageDownloadSpeedMbps()];
+      return [downloadSpeedMbps, this.getAverageDownloadSpeedMbps()];
+    } catch (error) {
+      console.error(error);
+      return [0, 0];
+    }
   }
 }
