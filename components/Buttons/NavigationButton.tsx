@@ -58,5 +58,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center",
   },
 });

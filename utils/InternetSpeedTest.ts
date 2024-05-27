@@ -12,32 +12,26 @@ export default class InternetSpeedTest {
     return Number(averageSpeed.toFixed(2));
   }
 
-  async testDownloadSpeed(): Promise<Array<Number>> {
-    const downloadSize = 25 * 1024 * 1024; // 25MB
-    // const downloadUrl = "https://examplefile.com/file-download/24";
-    const downloadUrl = "https://teste.ibltelecom.com:8080/download?nocache=b50bdb2a-c960-4f44-93a7-844465cbd04d&size=25000000&guid=80ab1a33-42c9-45c1-89fb-705b6d1baf38";
+  async testDownloadSpeed(): Promise<number> {
+    const downloadSize = 8_185_374; // 8.2MB
+    const downloadUrl = "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tokyo_Sky_Tree_2012.JPG";
     
     try {  
       const downloadStart = new Date().getTime();
-      const downloadResponse = await fetch(downloadUrl, {
-        mode: "cors",
-        keepalive: true,
-        priority: "high",
-        referrerPolicy: "no-referrer",
-        cache: "no-store",
-      });
+      await fetch(downloadUrl, { cache: "no-store" });
       const downloadEnd = new Date().getTime();
-      
+
       const downloadTime = (downloadEnd - downloadStart) / 1000;
-      console.warn(downloadResponse.status, downloadTime);
-      const downloadSpeedMbps = Number(((downloadSize / downloadTime) / 1024 / 1024).toFixed(2));
+      const downloadSpeedBps = downloadSize / downloadTime;
+      const downloadSpeedMbps = Number(((downloadSpeedBps / 1024 / 1024) * 8).toFixed(2));
 
       this.downloadSpeeds.push(downloadSpeedMbps);
 
-      return [downloadSpeedMbps, this.getAverageDownloadSpeedMbps()];
+      return downloadSpeedMbps;
+
     } catch (error) {
       console.error(error);
-      return [0, 0];
+      throw "Internet Speed Test Error";
     }
   }
 }

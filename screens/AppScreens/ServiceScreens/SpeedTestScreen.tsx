@@ -27,11 +27,19 @@ export default function SpeedTestScreen() {
     internetSpeedTest.reset();
     chartRef.current.reset();
 
-    for (let i = 0; i < 20; i++) {
-      const [speed, avgSpeed] = await internetSpeedTest.testDownloadSpeed();
-      speedometerRef.current.updateSpeed(avgSpeed);
-      chartRef.current.addSpeed(speed);
-      setSpeed(avgSpeed as any);
+    for (let i = 0; i < 5; i++) {
+      try {
+        const internetSpeed = await internetSpeedTest.testDownloadSpeed();
+        const avgSpeed = internetSpeedTest.getAverageDownloadSpeedMbps();
+
+        speedometerRef.current.updateSpeed(internetSpeed);
+        setSpeed(avgSpeed);
+        chartRef.current.addSpeed(internetSpeed);
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+
     }
 
     speedometerRef.current.reset();
