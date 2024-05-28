@@ -1,5 +1,6 @@
 import { useRef, useState, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
+
 import InternetSpeedTest from "@utils/InternetSpeedTest";
 
 import Body from "@components/Templates/Body";
@@ -27,13 +28,13 @@ export default function SpeedTestScreen() {
     internetSpeedTest.reset();
     chartRef.current.reset();
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
       try {
         const internetSpeed = await internetSpeedTest.testDownloadSpeed();
         const avgSpeed = internetSpeedTest.getAverageDownloadSpeedMbps();
 
         speedometerRef.current.updateSpeed(internetSpeed);
-        setSpeed(avgSpeed);
+        setSpeed(internetSpeed);
         chartRef.current.addSpeed(internetSpeed);
       } catch (error) {
         console.error(error);
@@ -46,7 +47,7 @@ export default function SpeedTestScreen() {
   }
 
   return (
-    <Body style={styles.container}>
+    <Body>
       <View>
         <Speedometer speedometerRef={speedometerRef}/>
         <Text style={[styles.velocityLabel, colors.velocityLabel]}>{speed} Mbps</Text>
