@@ -1,7 +1,8 @@
 import { useRef, useState, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { WebView } from 'react-native-webview';
 
-import InternetSpeedTest from "@utils/InternetSpeedTest";
+import internetSpeedTestHtml from "@utils/InternetSpeedTest";
 
 import Body from "@components/Templates/Body";
 import Button from "@components/Buttons/Button";
@@ -10,7 +11,7 @@ import Chart from "@components/Widgets/Chart";
 
 import ThemeContext from "@contexts/ThemeContext";
 
-const internetSpeedTest = new InternetSpeedTest();
+// const internetSpeedTest = new InternetSpeedTest();
 
 export default function SpeedTestScreen() {
   const { theme } = useContext(ThemeContext);
@@ -24,37 +25,35 @@ export default function SpeedTestScreen() {
     },
   });
 
-  const startTest = async () => {
-    internetSpeedTest.reset();
-    chartRef.current.reset();
+  // const startTest = async () => {
+  //   // internetSpeedTest.reset();
+  //   // chartRef.current.reset();
 
-    for (let i = 0; i < 1; i++) {
-      try {
-        const internetSpeed = await internetSpeedTest.testDownloadSpeed();
-        const avgSpeed = internetSpeedTest.getAverageDownloadSpeedMbps();
+  //   for (let i = 0; i < 1; i++) {
+  //     try {
+  //       // const internetSpeed = await internetSpeedTest.testDownloadSpeed();
+  //       // const avgSpeed = internetSpeedTest.getAverageDownloadSpeedMbps();
 
-        speedometerRef.current.updateSpeed(internetSpeed);
-        setSpeed(internetSpeed);
-        chartRef.current.addSpeed(internetSpeed);
-      } catch (error) {
-        console.error(error);
-        return;
-      }
+  //       speedometerRef.current.updateSpeed(internetSpeed);
+  //       setSpeed(internetSpeed);
+  //       chartRef.current.addSpeed(internetSpeed);
+  //     } catch (error) {
+  //       console.error(error);
+  //       return;
+  //     }
 
-    }
+  //   }
 
-    speedometerRef.current.reset();
-  }
+    // speedometerRef.current.reset();
+  // }
 
   return (
-    <Body>
-      <View>
-        <Speedometer speedometerRef={speedometerRef}/>
-        <Text style={[styles.velocityLabel, colors.velocityLabel]}>{speed} Mbps</Text>
-      </View>
-      <Chart chartRef={chartRef} />
-      <Button icon="play" label="Iniciar Teste" loadingLabel="Testando Conexão..." onPress={startTest} />
-    </Body>
+    <WebView 
+      style={{flex: 1, backgroundColor: "gray"}}
+      originWhitelist={["*"]}
+      cacheEnabled={false}
+      source={{ html: internetSpeedTestHtml }}
+    />
   );
 }
 
