@@ -1,178 +1,170 @@
 const internetSpeedTestHtml = /* html */ `
-  <html>
-    <head>
-      <script>
-        function log(message) {
-          document.getElementById("log").innerHTML += "<br>" + message;
-        }
-      </script>
+  <script>
+    // message formatter: "code:message"
 
-      <script type="text/speedtest-worker">
-        const downloadSizeMB = 1;
-        const downloadSize = downloadSizeMB * 1024 * 1024; // 1MB
-        const downloadUrl = "https://nyc.speedtest.clouvider.net/backend/garbage.php";
-        const paralellDownloads = 1;
+    function sendLog(message) {
+      window.ReactNativeWebView.postMessage("0::" + message.toString());
+    }
 
-        let runningTest = false;
+    function sendSpeed(message) {
+      window.ReactNativeWebView.postMessage("1::" + message.toString());
+    }
 
-        function downloadFile() {
-          return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            
-            request.onload = () => {
-              resolve("Downloaded File");
-            }
+    function sendStatus(message) {
+      window.ReactNativeWebView.postMessage("2::" + message.toString());
+    }
 
-            request.onprogress = (event) => {
-              if (event.lengthComputable) {
-                const percentComplete = event.loaded / event.total * 100;
-                postMessage(percentComplete);
-              }
-            }
+    function sendError(message) {
+      window.ReactNativeWebView.postMessage("3::" + message.toString());
+    }
+  </script>
+  <script>
+    const downloadSizeMB = 100;
+    const downloadSize = downloadSizeMB * 1024 * 1024; // 1MB
+    const downloadUrl = "https://nyc.speedtest.clouvider.net/backend";
+    // const downloadUrl = "https://librespeed.a573.net/backend";
+    const maxGraceTime = 1_500;
+    const paralellDownloads = 6;
+    const connectionRetries = 5;
+    const maxErrorSkip = 5;
+    const compensationFactor = 1.06;
 
-            request.onerror = (error) => {
-              reject("Error during download");
-            }
+    const xhr = [];
+    let running = false;
+    let listener;
+    let totalDownloaded = 0;
+    let errorSkip = 0;
 
-            request.open("GET", downloadUrl + \`?cors=true&r=\$\{Math.random()\}ckSize=\$\{downloadSizeMB\}\`);
-            request.send();
-          });
-        }
+    async function addError() {
+      errorSkip++;
+      sendError("Download Error: ", errorSkip + " of " + maxErrorSkip + " errors");
+      if (errorSkip >= maxErrorSkip) {
+        stopDlTest("1");
+      }
+    }
 
-        async function dlTest() {
-          const message = await downloadFile();
-        }
+    async function startDownload(i, delay=0) {
+      let prevLoaded = 0;
+      let downloadDiff = 0;
 
-        async function onmessage (event) => {
-          postMessage("Worker Received Message: " + event.data);
-          switch (event.data) {
-            case "dlTest":
-              runningTest = true;
-              await dlTest();
-              break;
+      xhr[i] = new XMLHttpRequest();
+      
+      xhr[i].onload = () => {
+        try {
+          xhr[i].abort();
+        } catch (error) {}
+        
+        if (!running) return;
+
+        startDownload(i);
+      }
+      
+      xhr[i].onprogress = (event) => {
+        if (!running) {
+          try {          
+            xhr[i].abort();
+          } catch (error) {}
+          return;
+        };
+
+        loadDiff = event.loaded <= 0 ? 0 : event.loaded - prevLoaded;
+        if (isNaN(loadDiff) || !isFinite(loadDiff) || loadDiff < 0) return; // just in case
+
+        prevLoaded = event.loaded;
+        totalDownloaded += loadDiff;
+      }
+      
+      xhr[i].ontimeout = () => {
+        addError();
+        sendError("Download Timeout")
+      }
+      xhr[i].onabort = () => {
+        if (!running) return;
+
+        addError();
+        sendError("Download Aborted");
+      }
+      xhr[i].onerror = () => {
+        addError();
+        sendError("Download Error")
+      };
+      
+      xhr[i].responseType = "arraybuffer";
+      xhr[i].open("GET", downloadUrl + "/garbage.php?cors=true&r=" + Math.random() + "&ckSize=" + downloadSizeMB);
+
+      setTimeout(() => {
+        xhr[i].send();
+      }, delay * Math.random());
+    }
+
+    async function startDownloadStream() {
+      for (let i = 0; i < paralellDownloads; i++) {
+        startDownload(i, i * 300);
+      }
+    }
+
+    async function stopDownloadStream() {
+      for (let i = 0; i < paralellDownloads; i++) {
+        try {
+          xhr[i].abort();
+        } catch (error) {}
+      }
+    }
+
+    async function startStreamListener() {
+      let startTime = new Date().getTime();
+      let bonusT = 0;
+      let graceTimeDone = false;
+      let retries = 0;
+
+      listener = setInterval(() => {
+        const t = new Date().getTime() - startTime; 
+
+        if (totalDownloaded === 0) {
+          retries++;
+          if (retries > connectionRetries) {
+            stopDlTest("1");
           }
         }
-      </script>
+        
+        if (t < 200) return;
 
-      <script>
-        function createWorker() {
-          const blob = new Blob(
-            Array.prototype.map.call(
-              document.querySelectorAll("script[type='text\/speedtest-worker']"),
-              (script) => script.textContent
-            ),
-            { type: "text/javascript" },
-          );
+        if (!graceTimeDone) {
+          if (t > maxGraceTime) {
+            if (totalDownloaded > 0) {
+              // if the connection is so slow that we didn't get a single chunk yet, do not reset
+              startTime = new Date().getTime();
+              totalDownloaded = 0.0;
+            }
 
-          const worker = new Worker(URL.createObjectURL(blob));
-
-          return worker;
-        }
-      </script>
-
-      <script>
-        const speedStream = [];
-
-        function start() {
-          const worker = createWorker();
-          log("Worker Created");
-          worker.postMessage("dlTest");
+            graceTimeDone = true;
+          }
+          return;
         }
 
-        window.onload = start;
-      </script>
-    </head>
-    <body>
-      <p>log: <span id=log></span></p>
-    </body>
-  </html>
+        const speed = (totalDownloaded / (t / 1000));
+        sendSpeed((speed * 8 * compensationFactor / 1000000).toFixed(2));
+      }, 200);
+    }
+
+    async function stopStreamListener() {
+      clearInterval(listener);
+    }
+
+    async function startDlTest() {
+      sendLog("Testing Download Speed...");
+      running = true;
+      startDownloadStream();
+      startStreamListener();
+    }
+
+    async function stopDlTest(status="0") {
+      running = false;
+      stopDownloadStream();
+      stopStreamListener();
+      sendStatus(status);
+    }
+  </script>
 `;
 
 export default internetSpeedTestHtml;
-
-// export default class InternetSpeedTest {
-//   downloadSpeeds: number[] = [];
-
-//   reset(): void {
-//     this.downloadSpeeds = [];
-//   }
-
-//   getAverageDownloadSpeedMbps(): number {
-//     const totalSpeed = this.downloadSpeeds.reduce((acc, speed) => acc + speed, 0);
-//     const averageSpeed = totalSpeed / this.downloadSpeeds.length;
-
-//     return Number(averageSpeed.toFixed(2));
-//   }
-
-//   async testDownloadSpeed(): Promise<number> {
-//     const downloadSize = 8_185_374; // 8.2MB
-//     const downloadUrl = "https://reactnative.dev/img/header_logo.svg";
-//     // const downloadSize = 1_048_576; // 1 MB
-//     // const downloadUrl = `https://nyc.speedtest.clouvider.net/backend/garbage.php?cors=true&r=${Math.random()}&ckSize=1`;
-    
-//     try {
-//       console.log("Testing Download Speed...");
-      
-//       const a = [new Date().getTime()];
-
-//       const request = new XMLHttpRequest();
-//       request.onprogress = (event) => {
-//         console.log(event);
-//         console.log("Progress: ", event.loaded);
-//       }
-
-//       request.onload = () => {
-//         console.log("finished")
-//       }
-//       request.open("GET", downloadUrl);
-//       await request.send();
-
-//       console.log("Finished Download Speed Test");
-
-//       // const downloadStart = new Date().getTime();
-
-//       // await fetch(downloadUrl, { cache: "no-store", mode: "cors"});
-//       // const downloadEnd = new Date().getTime();
-
-//       // const downloadTime = (downloadEnd - downloadStart) / 1000;
-//       // const downloadSpeedBps = downloadSize / downloadTime;
-//       // const downloadSpeedMbps = Number(((downloadSpeedBps / 1024 / 1024) * 8).toFixed(2));
-      
-//       // console.log("Download Time: ", (downloadEnd - downloadStart) / 1000 + "\n");
-//       // console.log("Download Speed: ", downloadSpeedMbps + " Mbps\n");
-//       // console.log(" ")
-      
-//       //this.downloadSpeeds.push(downloadSpeedMbps);
-
-//       return 0; //downloadSpeedMbps;
-//     } catch (error) {
-//       console.error(error);
-//       throw "Internet Speed Test Error";
-//     }
-//   }
-// }
-/*
-function test() {
-          let totLoaded = 0.0;
-          let startTime = new Date().getTime();
-
-          const log = document.getElementById("log");
-          log.innerHTML = "Testing...";
-
-          const request = new XMLHttpRequest();
-          request.onload = () => {
-            log.innerHTML = "Finished";
-          }
-          request.onprogress = (event) => {
-            log.innerHTML = "Progress: " + event.loaded/event.total * 100 + "%";
-            log.innerHTML += "<br>Length Computable: " + event.lengthComputable;
-            log.innerHTML += "<br>Loaded: " + event.loaded;
-            log.innerHTML += "<br>Total: " + event.total;
-          }
-          request.onerror = (error) => {
-            log.innerHTML = "Error: " + error;
-          }
-          request.open("GET", "https://upload.wikimedia.org/wikipedia/commons/0/07/Wikipedia20_animated_cake_1MB.gif");
-          request.send();
-        }
-        */

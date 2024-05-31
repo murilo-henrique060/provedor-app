@@ -38,7 +38,11 @@ export default function Button({ icon=undefined, label="label", loadingLabel="lo
     
     degrees.value = withRepeat(withTiming(360, { duration: 800 }), -1);
 
-    await onPress();
+    try {
+      await onPress();
+    } catch (error) {
+      console.error(error);
+    }
     
     cancelAnimation(degrees);
     degrees.value = 0;

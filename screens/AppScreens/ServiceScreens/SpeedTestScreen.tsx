@@ -11,13 +11,15 @@ import Chart from "@components/Widgets/Chart";
 
 import ThemeContext from "@contexts/ThemeContext";
 
-// const internetSpeedTest = new InternetSpeedTest();
-
 export default function SpeedTestScreen() {
   const { theme } = useContext(ThemeContext);
   const speedometerRef = useRef(null);
   const chartRef = useRef(null);
   const [speed, setSpeed] = useState(0);
+
+  const [isConnected, setIsConnected] = useState(true);
+
+  const webViewRef = useRef(null);
 
   const colors = StyleSheet.create({
     velocityLabel: {
@@ -25,35 +27,72 @@ export default function SpeedTestScreen() {
     },
   });
 
-  // const startTest = async () => {
-  //   // internetSpeedTest.reset();
-  //   // chartRef.current.reset();
+  const handleMessage = (event) => {
+    const [code, data] = event.nativeEvent.data.split("::");
 
-  //   for (let i = 0; i < 1; i++) {
-  //     try {
-  //       // const internetSpeed = await internetSpeedTest.testDownloadSpeed();
-  //       // const avgSpeed = internetSpeedTest.getAverageDownloadSpeedMbps();
+    switch (code) {
+      case "0":
+        console.log(data);
+      break;
+      case "1":
+        const downloadSpeed = parseFloat(data);
+        speedometerRef.current.updateSpeed(downloadSpeed);
+        chartRef.current.addSpeed(downloadSpeed);
+        setSpeed(downloadSpeed);
+      break;
+      case "2":
+        switch (data) {
+          case "0":
+            speedometerRef.current.reset();
+            console.log("Test Finished");
+          break;
+          case "1":
+            console.error("No Internet Connection");
+            setIsConnected(false);
+          break;
+        }
+      break;
+      case "3":
+        console.error(data);
+      break;
+    }
+  }
 
-  //       speedometerRef.current.updateSpeed(internetSpeed);
-  //       setSpeed(internetSpeed);
-  //       chartRef.current.addSpeed(internetSpeed);
-  //     } catch (error) {
-  //       console.error(error);
-  //       return;
-  //     }
-
-  //   }
-
-    // speedometerRef.current.reset();
-  // }
+  const startTest = () => {
+    return new Promise<void>((resolve, reject) => {
+      chartRef.current.reset();
+      speedometerRef.current.reset();
+      webViewRef.current.injectJavaScript("startDlTest()");
+      
+      setTimeout(() => {
+        webViewRef.current?.injectJavaScript("stopDlTest()");        
+        resolve();
+      }, 20_000);
+      
+    });
+  }
 
   return (
-    <WebView 
-      style={{flex: 1, backgroundColor: "gray"}}
-      originWhitelist={["*"]}
-      cacheEnabled={false}
-      source={{ html: internetSpeedTestHtml }}
-    />
+    <Body style={styles.container}>
+      {
+        isConnected ? 
+        <Text style={colors.velocityLabel}>Sem conexão com a internet</Text> :
+        <>
+          <WebView
+            ref={ref => webViewRef.current = ref}
+            originWhitelist={["*"]}
+            cacheEnabled={false}
+            cacheMode="LOAD_NO_CACHE"
+            source={{ html: internetSpeedTestHtml }}
+            onMessage={handleMessage}
+          />
+          <Speedometer speedometerRef={speedometerRef} />
+          <Text style={[styles.velocityLabel, colors.velocityLabel]}>{speed} Mbps</Text>
+          <Chart chartRef={chartRef} />
+          <Button icon="play" label="Iníciar Teste" onPress={startTest} />
+        </>
+      }
+    </Body>
   );
 }
 
