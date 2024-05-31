@@ -1,6 +1,7 @@
-import { useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { WebView } from 'react-native-webview';
+import NetInfo from '@react-native-community/netinfo';
 
 import internetSpeedTestHtml from "@utils/InternetSpeedTest";
 
@@ -17,7 +18,7 @@ export default function SpeedTestScreen() {
   const chartRef = useRef(null);
   const [speed, setSpeed] = useState(0);
 
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
 
   const webViewRef = useRef(null);
 
@@ -25,7 +26,23 @@ export default function SpeedTestScreen() {
     velocityLabel: {
       color: theme.textBody,
     },
+    title: {
+      color: theme.textBody,
+    },
+    bodyText: {
+      color: theme.textBody,
+    },
   });
+
+  // useEffect(() => {
+  //   const unsubscribe = NetInfo.addEventListener(state => {     
+  //     setIsConnected(state.type === "wifi" && state.isConnected && state.isInternetReachable);
+  //   });
+
+  //   return () => {
+  //     unsubscribe();
+  //   }
+  // })
 
   const handleMessage = (event) => {
     const [code, data] = event.nativeEvent.data.split("::");
@@ -76,7 +93,6 @@ export default function SpeedTestScreen() {
     <Body style={styles.container}>
       {
         isConnected ? 
-        <Text style={colors.velocityLabel}>Sem conexão com a internet</Text> :
         <>
           <WebView
             ref={ref => webViewRef.current = ref}
@@ -90,6 +106,24 @@ export default function SpeedTestScreen() {
           <Text style={[styles.velocityLabel, colors.velocityLabel]}>{speed} Mbps</Text>
           <Chart chartRef={chartRef} />
           <Button icon="play" label="Iníciar Teste" onPress={startTest} />
+        </>:
+        <>
+          <Text style={[styles.title, colors.title]}>Sem Internet / Sem conexão ao Wifi</Text>
+
+          <View style={styles.bodyContainer}>
+            <Text style={[styles.bodyText, colors.bodyText]}>
+              {`\u2022 Verifique se o dispositivo está conectado à sua rede Wi-Fi.`}
+            </Text>
+            <Text style={[styles.bodyText, colors.bodyText]}>
+              {`\u2022 Verifique se a conexão está ativa.`}
+            </Text>
+            <Text style={[styles.bodyText, colors.bodyText]}>
+              {`\u2022 Retire o roteador da tomada, aguarde 1 minuto e reconecte-o à tomada.`}
+            </Text>
+            <Text style={[styles.bodyText, colors.bodyText]}>
+              {`\u2022 Caso o problema não seja solucionado, contate o suporte.`}
+            </Text>
+          </View>
         </>
       }
     </Body>
@@ -107,5 +141,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-  }
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  bodyContainer: {
+    gap: 5,
+  },
+  bodyText: {
+    fontSize: 16,
+  },
 });

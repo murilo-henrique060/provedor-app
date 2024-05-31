@@ -25,7 +25,7 @@ const internetSpeedTestHtml = /* html */ `
     // const downloadUrl = "https://librespeed.a573.net/backend";
     const maxGraceTime = 1_500;
     const paralellDownloads = 6;
-    const connectionRetries = 5;
+    const connectionRetries = 10;
     const maxErrorSkip = 5;
     const compensationFactor = 1.06;
 
